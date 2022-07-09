@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <section>
+            <label for="input-number">Positive, Negative, or Zero</label>
+            <input type="number" placeholder="Enter a number." id="input-number" onblur="isPosNegZeroNaN(event)">    
+        </section>
+
+        <section>
+            <label for="input-age">Retirement Calculator</label>
+            <input type="number" placeholder="Enter your age." id="input-age" onblur="calculateYearsUntilRetirement(event)">
+        </section>
+
+        <section>
+            <label for="input-day">Days until the weekend</label>
+            <input type="text" placeholder="Enter day of week (Monday-Sunday)" id="input-day" onblur="calculateDaysUntilWeekend(event)">
+        </section>
+
+        <section>
+            <label for="input-3-numbers">Enter 3 numbers, separated by spaces</label>
+            <input type="text" placeholder="Enter 3 numbers" id="input-3-numbers" onblur="calculateLargestNumber(event)">
+        </section>
+
+        <section>
+            <label for="select-vegetable">Select a vegetable to see the price</label>
+            <div id="vegetable-group">
+                <select name="select-vegetable" id="select-vegetable" onchange="handleSelectVegetable(event)" required>
+                    <option disabled selected value class="option-invalid"> --- </option>
+                    <option value="potatoes">Potatoes</option>
+                    <option value="carrots">Carrots</option>
+                    <option value="broccoli">Broccoli</option>
+                    <option value="cabbage">Cabbage</option>
+                    <option value="asparagus">Asparagus</option>
+                </select>
+                
+                <div id="vegetable-price-displayer">
+            </div>
+                
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,59 @@
+$color-disabled: rgba(1.0, 1.0, 1.0, 0.1);
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+main {
+    margin: 20px;
+    display: grid;
+    row-gap: 40px;
+}
+
+section {
+    display: grid;
+}
+
+option {
+    color: black;
+}
+
+select:invalid,
+.option-invalid {
+    color: #{$color-disabled};
+}
+
+input,
+select,
+#vegetable-group {
+    width: 250px;
+    height: 60px;
+    font-size: 24px;
+}
+
+label {
+    width: 600px;
+    font-size: 24px;
+    padding-bottom: 4px;
+    font-weight: bold;
+}
+
+#input-day,
+#input-3-numbers,
+#input-count-substrings{
+    width: 500px;
+}
+
+#vegetable-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 900px;
+}
+
+#vegetable-price-displayer {
+    padding-left: 20px;
+}

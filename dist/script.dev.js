@@ -1,5 +1,13 @@
 "use strict";
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function match(key, obj, default_val) {
   var value = obj[key];
   return obj.hasOwnProperty(key) ? value : default_val;
@@ -113,6 +121,51 @@ function calculateDaysUntilWeekend(event) {
   }
 }
 
+function getNoun(count, singular) {
+  return "".concat(count == 1 ? singular : singular + "s");
+}
+
+function truncate(num, maxDecimalCount) {
+  var numStr = String(num);
+
+  if (strCount(numStr, ".") == 0) {
+    return numStr;
+  } else {
+    return numStr.slice(0, numStr.indexOf(".") + maxDecimalCount);
+  }
+}
+
+function calculateNumberOfYears(event) {
+  var days = event.target.value;
+
+  if (days === "") {
+    return;
+  }
+
+  var years = convertDaysToAge(days);
+  var dayNoun = getNoun(days, "day");
+  var yearNoun = getNoun(years, "year");
+  var yearsStr = String(years);
+  var maxDecimalCount = 4;
+  var fYearsStr = truncate(years, maxDecimalCount); // Number.toFixed() uses rounding
+
+  while (fYearsStr.endsWith("0")) {
+    fYearsStr = fYearsStr.slice(0, fYearsStr.length - 1);
+  }
+
+  if (fYearsStr.endsWith(".")) {
+    fYearsStr = fYearsStr.replaceAll(".", "");
+  }
+
+  var msg = "".concat(days, " ").concat(dayNoun, " = ").concat(fYearsStr, " ").concat(yearNoun);
+
+  if (yearsStr.valueOf() !== fYearsStr.valueOf()) {
+    msg += " (truncated)";
+  }
+
+  alert(msg);
+}
+
 function calculateYearsUntilRetirement(event) {
   var currentAge = event.target.value;
 
@@ -165,7 +218,8 @@ function calculateLargestNumber(event) {
       return Number(n);
     });
     numArray.sort();
-    alert("sorted: ".concat(numArray));
+    var msg = "Sorted: ".concat(numArray, "\nLargest: ").concat(getLargestNumber.apply(void 0, _toConsumableArray(numArray)));
+    alert(msg);
     event.target.value = String(numArray).replaceAll(",", ", ");
   }
 }

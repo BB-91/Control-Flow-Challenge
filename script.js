@@ -117,6 +117,49 @@ function calculateDaysUntilWeekend(event){
     }
 }
 
+function getNoun(count, singular) {
+    return `${count == 1 ? singular : singular + "s"}`
+}
+
+function truncate(num, maxDecimalCount) {
+    let numStr = String(num);
+    if (strCount(numStr, ".") == 0) {
+        return numStr;
+    } else {
+        return numStr.slice(0, numStr.indexOf(".") + maxDecimalCount);
+    }
+}
+
+function calculateNumberOfYears(event) {
+    const days = event.target.value
+    if (days === "") {
+        return;
+    }
+
+    const years = convertDaysToAge(days);
+    const dayNoun = getNoun(days, "day");
+    const yearNoun = getNoun(years, "year");
+    const yearsStr = String(years);
+    const maxDecimalCount = 4;
+
+    let fYearsStr = truncate(years, maxDecimalCount); // Number.toFixed() uses rounding
+    while (fYearsStr.endsWith("0")) {
+        fYearsStr = fYearsStr.slice(0, fYearsStr.length - 1);
+    }
+
+    if (fYearsStr.endsWith(".")) {
+        fYearsStr = fYearsStr.replaceAll(".", "");
+    }
+
+    let msg = `${days} ${dayNoun} = ${fYearsStr} ${yearNoun}`;
+
+    if (yearsStr.valueOf() !== fYearsStr.valueOf()) {
+        msg += " (truncated)"
+    }
+
+    alert(msg);
+}
+
 function calculateYearsUntilRetirement(event) {
     const currentAge = event.target.value;
     if (currentAge === "") {
@@ -166,7 +209,8 @@ function calculateLargestNumber(event) {
     } else {
         let numArray = subStrings.map(n => Number(n));
         numArray.sort();
-        alert(`sorted: ${numArray}`);
+        let msg = `Sorted: ${numArray}\nLargest: ${getLargestNumber(...numArray)}`;
+        alert(msg);
         event.target.value = String(numArray).replaceAll(",", ", ");
     }
 }

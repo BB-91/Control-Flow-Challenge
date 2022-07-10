@@ -20,11 +20,7 @@ function titleCase(str) {
 }
 
 function isNumberPositive(num) {
-  if (num == 0) {
-    throw new Error("number is zero.");
-  } else {
-    return num > 0;
-  }
+  return num >= 0; // counting 0 as positive
 }
 
 function convertDaysToAge(days) {
@@ -56,7 +52,7 @@ function allNumbersPositive(numbers) {
     throw new Error("Not a number array");
   }
 
-  return Math.min.apply(Math, _toConsumableArray(numbers)) >= 0; // counting 0 as positive 
+  return isNumberPositive(Math.min.apply(Math, _toConsumableArray(numbers)));
 }
 
 function back(array) {
@@ -88,7 +84,7 @@ function strCount(str, subStr) {
   return count;
 }
 
-function isPosNegZeroNaN(event) {
+function isPosOrNeg(event) {
   var value = event.target.value;
 
   if (value === "") {
@@ -97,14 +93,32 @@ function isPosNegZeroNaN(event) {
 
   if (isNaN(value)) {
     alert("'".concat(value, "' is not a number."));
-  } else if (value == 0) {
-    alert("value is zero.");
   } else if (isNumberPositive(value)) {
+    if (value == 0) {
+      value = Math.abs(0);
+      event.target.value = value;
+    }
+
     alert("".concat(value, " is a positive number."));
   } else {
     alert("".concat(value, " is a negative number."));
   }
-}
+} // function isPosOrNeg(event) {
+//     let value = event.target.value
+//     if (value === "") {
+//         return;
+//     }
+//     if (isNaN(value)) {
+//         alert(`'${value}' is not a number.`);
+//     } else if (value == 0) {
+//         alert("value is zero.");
+//     } else if (isNumberPositive(value)) {
+//         alert(`${value} is a positive number.`);
+//     } else {
+//         alert(`${value} is a negative number.`);
+//     }
+// }
+
 
 function calculateDaysUntilWeekend(event) {
   var day = event.target.value;

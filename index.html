@@ -21,8 +21,21 @@
         </section>
 
         <section>
-            <label for="input-day">Days until the weekend</label>
-            <input type="text" placeholder="Enter day of week (Monday-Sunday)" id="input-day" onblur="calculateDaysUntilWeekend(event)">
+            <label for="input-day">Select a day</label>
+            <div id="day-group">
+                <select name="select-day" id="select-day" onchange="calculateDaysUntilWeekend(event)" required>
+                    <option disabled selected value class="option-invalid"> --- </option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+
+                <div id="weekend-distance-displayer"></div>
+            </div>
         </section>
 
         <section>

@@ -26,6 +26,7 @@ select:invalid,
 
 input,
 select,
+#day-group,
 #vegetable-group {
   width: 250px;
   height: 60px;
@@ -47,6 +48,7 @@ label {
   width: 500px;
 }
 
+#day-group,
 #vegetable-group {
   display: flex;
   flex-wrap: wrap;
@@ -54,6 +56,7 @@ label {
   width: 900px;
 }
 
+#weekend-distance-displayer,
 #vegetable-price-displayer {
   padding-left: 20px;
 }

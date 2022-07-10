@@ -1,5 +1,17 @@
 "use strict";
 
+function getElem(elementID) {
+    let element = document.getElementById(elementID);
+    if (!element) {
+        throw new Error(`Can't find element with ID '${elementID}'`)
+    }
+    return element;
+}
+
+function setElemInnerText(elementID, newInnerText){
+    getElem(elementID).innerText = newInnerText;
+}
+
 function match(key, obj, default_val) {
     const value = obj[key]
     return obj.hasOwnProperty(key) ? value : default_val
@@ -122,7 +134,8 @@ function calculateDaysUntilWeekend(event){
                 `There are ${result} days between ${fDay} and Saturday.`
             );
 
-        alert(msg);
+        // alert(msg);
+        setElemInnerText("weekend-distance-displayer", msg)
     }
 }
 

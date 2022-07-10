@@ -10,6 +10,20 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function getElem(elementID) {
+  var element = document.getElementById(elementID);
+
+  if (!element) {
+    throw new Error("Can't find element with ID '".concat(elementID, "'"));
+  }
+
+  return element;
+}
+
+function setElemInnerText(elementID, newInnerText) {
+  getElem(elementID).innerText = newInnerText;
+}
+
 function match(key, obj, default_val) {
   var value = obj[key];
   return obj.hasOwnProperty(key) ? value : default_val;
@@ -130,8 +144,9 @@ function calculateDaysUntilWeekend(event) {
     var msg = match(result, {
       0: "".concat(fDay, " is a weekend. Nice!"),
       1: "There is 1 day between ".concat(fDay, " and Saturday.")
-    }, "There are ".concat(result, " days between ").concat(fDay, " and Saturday."));
-    alert(msg);
+    }, "There are ".concat(result, " days between ").concat(fDay, " and Saturday.")); // alert(msg);
+
+    setElemInnerText("weekend-distance-displayer", msg);
   }
 }
 

@@ -42,22 +42,28 @@
 
         <section>
             <label for="input-number-of-days">Convert Days to Years</label>
-            <input type="number" min="0" placeholder="Enter a number of days" id="input-number-of-days" onblur="calculateNumberOfYears(event)">
+            <popup-parent>
+                <input type="number" min="0" placeholder="Enter a number of days" id="input-number-of-days" onblur="calculateNumberOfYears(event)">
+            </popup-parent>
         </section>
 
         <section>
             <label for="input-3-numbers">Enter 3 numbers, separated by commas</label>
-            <input type="text" placeholder="Enter 3 numbers" id="input-3-numbers" onblur="calculateLargestNumber(event)">
+            <popup-parent>
+                <input type="text" placeholder="Enter 3 numbers" id="input-3-numbers" onblur="calculateLargestNumber(event)">
+            </popup-parent>
         </section>
 
         <section>
             <label for="input-3-names">Enter 3 names, separated by commas</label>
-            <input type="text" placeholder="Enter 3 names" id="input-3-names" onblur="showLastName(event)">
+            <popup-parent>
+                <input type="text" placeholder="Enter 3 names" id="input-3-names" onblur="showLastName(event)">
+            </popup-parent>
         </section>
 
         <section>
             <label for="select-vegetable">Select a vegetable to see the price</label>
-            <div id="group-vegetable" class="popup-parent">
+            <popup-parent id="group-vegetable">
                 <select name="select-vegetable" id="select-vegetable" onchange="handleSelectVegetable(event)" required>
                     <option disabled selected value class="option-invalid"> --- </option>
                     <option value="potatoes">Potatoes</option>
@@ -66,7 +72,7 @@
                     <option value="cabbage">Cabbage</option>
                     <option value="asparagus">Asparagus</option>
                 </select>
-            </div>
+            </popup-parent>
                 
         </section>
     </main>

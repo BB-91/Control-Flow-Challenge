@@ -73,6 +73,12 @@ function setElemInnerText(elementID_OR_element, newInnerText) {
 
 function getChildPopupDiv(parentElement_OR_parentElementID) {
   var parent = getElem(parentElement_OR_parentElementID);
+
+  if (parent.tagName !== "POPUP-PARENT") {
+    // tagName returns upper-case
+    throw new Error("Element tagName: '".concat(parent.tagName, "', expected: 'POPUP-PARENT'"));
+  }
+
   var childPopupDiv = null;
   var children = Array.from(parent.children);
   children.forEach(function (child) {
@@ -92,8 +98,17 @@ function getChildPopupDiv(parentElement_OR_parentElementID) {
   return childPopupDiv;
 }
 
+function getSiblingPopupDiv(siblingElement_OR_siblingElementID) {
+  var parent = getElem(siblingElement_OR_siblingElementID).parentElement;
+  return getChildPopupDiv(parent);
+}
+
 function setChildPopupDivInnerText(parentElement_OR_parentElementID, newInnerText) {
   setElemInnerText(getChildPopupDiv(parentElement_OR_parentElementID), newInnerText);
+}
+
+function setSiblingPopupDivInnerText(siblingElement_OR_siblingElementID, newInnerText) {
+  setElemInnerText(getSiblingPopupDiv(siblingElement_OR_siblingElementID), newInnerText);
 }
 
 function match(key, obj, default_val) {
@@ -367,7 +382,8 @@ function showLastName(event) {
   var namesStr = String(unsortedNames).replaceAll(",", ", ");
 
   if (namesStr) {
-    alert("Last name entered: ".concat(back(unsortedNames)));
+    // alert(`Last name entered: ${back(unsortedNames)}`);
+    setSiblingPopupDivInnerText(event.target, "Last name entered: ".concat(back(unsortedNames)));
     event.target.value = namesStr;
   }
 }

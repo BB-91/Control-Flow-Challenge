@@ -173,9 +173,14 @@ function calculateNumberOfYears(event) {
 }
 
 function calculateYearsUntilRetirement(event) {
-    const currentAge = event.target.value;
+    let currentAge = event.target.value;
     if (currentAge === "") {
         return;
+    }
+
+    if (currentAge < 0) {
+        currentAge = Math.max(0, currentAge);
+        event.target.value = currentAge;
     }
 
     const yearsUntilRetirment = 65 - currentAge;
@@ -199,7 +204,7 @@ function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3)
     let fStr = str.trim();
 
     if (str === "") {
-        return;
+        return dataArray;
     }
 
     while (fStr.endsWith(",")) {
@@ -209,7 +214,7 @@ function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3)
     let commaCount = strCount(fStr, ",");
     if (commaCount != requiredCommaCount) {
         alert(`Expected ${requiredCommaCount} commas, got ${commaCount}`);
-        return;
+        return dataArray;
     }
 
     fStr = fStr.replaceAll(" ", "");

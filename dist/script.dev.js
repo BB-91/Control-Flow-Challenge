@@ -189,6 +189,11 @@ function calculateYearsUntilRetirement(event) {
     return;
   }
 
+  if (currentAge < 0) {
+    currentAge = Math.max(0, currentAge);
+    event.target.value = currentAge;
+  }
+
   var yearsUntilRetirment = 65 - currentAge;
   var yearStr = Math.abs(yearsUntilRetirment) == 1 ? "year" : "years";
   var msg = "At age ".concat(currentAge, ", ");
@@ -211,7 +216,7 @@ function getCommaSeparatedArrayAndStr(str, shouldSort) {
   var fStr = str.trim();
 
   if (str === "") {
-    return;
+    return dataArray;
   }
 
   while (fStr.endsWith(",")) {
@@ -222,7 +227,7 @@ function getCommaSeparatedArrayAndStr(str, shouldSort) {
 
   if (commaCount != requiredCommaCount) {
     alert("Expected ".concat(requiredCommaCount, " commas, got ").concat(commaCount));
-    return;
+    return dataArray;
   }
 
   fStr = fStr.replaceAll(" ", "");

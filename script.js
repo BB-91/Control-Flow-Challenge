@@ -131,10 +131,13 @@ function truncate(num, maxDecimalCount) {
 }
 
 function calculateNumberOfYears(event) {
-    const days = event.target.value
+    let days = event.target.value
     if (days === "") {
         return;
     }
+
+    days = Math.abs(days);
+    event.target.value = days;
 
     const years = convertDaysToAge(days);
     const dayNoun = getNoun(days, "day");
@@ -209,9 +212,10 @@ function calculateLargestNumber(event) {
     } else {
         let numArray = subStrings.map(n => Number(n));
         numArray.sort();
-        let msg = `Sorted: ${numArray}\nLargest: ${getLargestNumber(...numArray)}`;
+        let numArrayStr = String(numArray).replaceAll(",", ", ");
+        let msg = `Sorted: ${numArrayStr}\nLargest: ${getLargestNumber(...numArray)}`;
         alert(msg);
-        event.target.value = String(numArray).replaceAll(",", ", ");
+        event.target.value = numArrayStr;
     }
 }
 

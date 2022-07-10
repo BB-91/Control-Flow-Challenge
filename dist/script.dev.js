@@ -9,6 +9,14 @@ function titleCase(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
+function isPositive(num) {
+  if (num == 0) {
+    throw new Error("number is zero.");
+  } else {
+    return num > 0;
+  }
+}
+
 function strCount(str, subStr) {
   var count = 0;
   var temp = str;
@@ -41,7 +49,7 @@ function isPosNegZeroNaN(event) {
     alert("'".concat(value, "' is not a number."));
   } else if (value == 0) {
     alert("value is zero.");
-  } else if (value > 1) {
+  } else if (isPositive(value)) {
     alert("".concat(value, " is a positive number."));
   } else {
     alert("".concat(value, " is a negative number."));

@@ -303,13 +303,6 @@ function showLastName(event) {
 
 function handleSelectVegetable(event) {
   var selection = event.target.value;
-  var elemID = "vegetable-price-displayer";
-  var vegetablePriceDisplayer = document.getElementById(elemID);
-
-  if (!vegetablePriceDisplayer) {
-    throw new Error("Can't find element with ID '".concat(elemID, "'"));
-  }
-
   var price = match(selection, {
     potatoes: 2.64,
     carrots: 2.64,
@@ -321,5 +314,5 @@ function handleSelectVegetable(event) {
     style: 'currency',
     currency: 'USD'
   });
-  vegetablePriceDisplayer.innerText = "".concat(formatter.format(price), "/kg");
+  setElemInnerText("vegetable-price-displayer", "".concat(formatter.format(price), "/kg"));
 }

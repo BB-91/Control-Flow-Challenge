@@ -284,11 +284,6 @@ function showLastName(event) {
 
 function handleSelectVegetable(event) {
     const selection = event.target.value;
-    const elemID = "vegetable-price-displayer";
-    let vegetablePriceDisplayer = document.getElementById(elemID);
-    if (!vegetablePriceDisplayer) {
-        throw new Error(`Can't find element with ID '${elemID}'`)
-    }
 
     const price = 
         match(selection,
@@ -303,5 +298,5 @@ function handleSelectVegetable(event) {
         );
 
     let formatter = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'});
-    vegetablePriceDisplayer.innerText = `${formatter.format(price)}/kg`;
+    setElemInnerText("vegetable-price-displayer", `${formatter.format(price)}/kg`);
 }

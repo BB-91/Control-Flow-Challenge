@@ -10,18 +10,54 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function getElem(elementID) {
-  var element = document.getElementById(elementID);
+function getElem(elementID_OR_element) {
+  var element = null;
 
-  if (!element) {
-    throw new Error("Can't find element with ID '".concat(elementID, "'"));
+  if (elementID_OR_element instanceof Element) {
+    element = elementID_OR_element;
+
+    if (!element) {
+      throw new Error("Object is instanceof Element, but is null");
+    }
+  } else {
+    var elementID = elementID_OR_element;
+    element = document.getElementById(elementID);
+
+    if (!element) {
+      throw new Error("Can't find element with ID '".concat(elementID, "'"));
+    }
   }
 
   return element;
 }
 
-function setElemInnerText(elementID, newInnerText) {
-  getElem(elementID).innerText = newInnerText;
+function setElemInnerText(elementID_OR_element, newInnerText) {
+  getElem(elementID_OR_element).innerText = newInnerText;
+}
+
+function getChildPopupDiv(parentElement_OR_parentElementID) {
+  var parent = getElem(parentElement_OR_parentElementID);
+  var childPopupDiv = null;
+  var children = Array.from(parent.children);
+  children.forEach(function (child) {
+    if (child.classList.contains("popup-div")) {
+      if (childPopupDiv) {
+        throw new Error("More than one child with class popup-div found under parent\n:".concat(parent));
+      }
+
+      childPopupDiv = child;
+    }
+  });
+
+  if (!childPopupDiv) {
+    throw new Error("Can't find child with class 'popup-div' under parent with id: '".concat(parent.id, "'\n").concat(parent));
+  }
+
+  return childPopupDiv;
+}
+
+function setChildPopupDivInnerText(parentElement_OR_parentElementID, newInnerText) {
+  setElemInnerText(getChildPopupDiv(parentElement_OR_parentElementID), newInnerText);
 }
 
 function match(key, obj, default_val) {
@@ -316,3 +352,21 @@ function handleSelectVegetable(event) {
   });
   setElemInnerText("vegetable-price-displayer", "".concat(formatter.format(price), "/kg"));
 }
+
+window.onload = function (event) {
+  setTimeout(function () {
+    var popupParents = Array.from(document.getElementsByClassName("popup-parent"));
+    popupParents.forEach(function (parent) {
+      var newChild = document.createElement("div");
+      newChild.classList.add("popup-div");
+      newChild.style.color = "red";
+      parent.appendChild(newChild);
+      console.log("added child!");
+      console.log("parent.id: ".concat(parent.id));
+      console.log("parent.childElementCount: ".concat(parent.childElementCount));
+      setTimeout(function () {
+        setChildPopupDivInnerText(parent, "hello!");
+      }, 1000); // newChild.innerText = "Surprise!";
+    });
+  }, 1000);
+};

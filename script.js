@@ -1,15 +1,49 @@
 "use strict";
 
-function getElem(elementID) {
-    let element = document.getElementById(elementID);
-    if (!element) {
-        throw new Error(`Can't find element with ID '${elementID}'`)
+function getElem(elementID_OR_element) {
+    let element = null;
+
+    if (elementID_OR_element instanceof Element) {
+        element = elementID_OR_element;
+        if (!element) {
+            throw new Error(`Object is instanceof Element, but is null`)
+        }
+    } else {
+        let elementID = elementID_OR_element;
+        element = document.getElementById(elementID);
+        if (!element) {
+            throw new Error(`Can't find element with ID '${elementID}'`)
+        }
     }
     return element;
 }
 
-function setElemInnerText(elementID, newInnerText){
-    getElem(elementID).innerText = newInnerText;
+function setElemInnerText(elementID_OR_element, newInnerText){
+    getElem(elementID_OR_element).innerText = newInnerText;
+}
+
+function getChildPopupDiv(parentElement_OR_parentElementID){
+    const parent = getElem(parentElement_OR_parentElementID);
+    let childPopupDiv = null;
+    
+    const children = Array.from(parent.children);
+    children.forEach(child => {
+        if (child.classList.contains("popup-div")) {
+            if (childPopupDiv) {
+                throw new Error(`More than one child with class popup-div found under parent\n:${parent}`)
+            }
+            childPopupDiv = child;
+        }
+    });
+
+    if (!childPopupDiv) {
+        throw new Error(`Can't find child with class 'popup-div' under parent with id: '${parent.id}'\n${parent}`)
+    }
+    return childPopupDiv;
+}
+
+function setChildPopupDivInnerText(parentElement_OR_parentElementID, newInnerText) {
+    setElemInnerText(getChildPopupDiv(parentElement_OR_parentElementID), newInnerText);
 }
 
 function match(key, obj, default_val) {
@@ -299,4 +333,32 @@ function handleSelectVegetable(event) {
 
     let formatter = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'});
     setElemInnerText("vegetable-price-displayer", `${formatter.format(price)}/kg`);
+}
+
+
+window.onload = (event) =>  {
+
+    setTimeout(() => {
+        const popupParents = Array.from(document.getElementsByClassName("popup-parent"));
+
+        popupParents.forEach(parent => {
+            const newChild = document.createElement("div");
+            
+            newChild.classList.add("popup-div")
+            newChild.style.color = "red";
+            parent.appendChild(newChild);
+            console.log("added child!");
+            
+            console.log(`parent.id: ${parent.id}`);
+
+            console.log(`parent.childElementCount: ${parent.childElementCount}`);
+
+            setTimeout(() => {
+                setChildPopupDivInnerText(parent, "hello!")
+            }, 1000);
+
+            // newChild.innerText = "Surprise!";
+        });        
+    }, 1000);
+
 }

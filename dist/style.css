@@ -48,15 +48,9 @@ label {
   width: 500px;
 }
 
-#day-group,
-#vegetable-group {
+popup-parent {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   width: 900px;
-}
-
-#weekend-distance-displayer,
-#vegetable-price-displayer {
-  padding-left: 20px;
 }

@@ -1,5 +1,13 @@
 "use strict";
 
+class PopupParent extends HTMLElement {
+    constructor() {
+        super();
+    }
+}
+
+customElements.define('popup-parent', PopupParent);
+
 function getElem(elementID_OR_element) {
     let element = null;
 
@@ -168,8 +176,7 @@ function calculateDaysUntilWeekend(event){
                 `There are ${result} days between ${fDay} and Saturday.`
             );
 
-        // alert(msg);
-        setElemInnerText("weekend-distance-displayer", msg)
+        setChildPopupDivInnerText("group-day", msg);
     }
 }
 
@@ -332,33 +339,33 @@ function handleSelectVegetable(event) {
         );
 
     let formatter = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'});
-    setElemInnerText("vegetable-price-displayer", `${formatter.format(price)}/kg`);
+    setChildPopupDivInnerText("group-vegetable", `${formatter.format(price)}/kg`);
 }
 
 
 window.onload = (event) =>  {
 
     setTimeout(() => {
-        const popupParents = Array.from(document.getElementsByClassName("popup-parent"));
+        const popupParents = Array.from(document.getElementsByTagName("popup-parent"));
 
         popupParents.forEach(parent => {
             const newChild = document.createElement("div");
-            
             newChild.classList.add("popup-div")
             newChild.style.color = "red";
             parent.appendChild(newChild);
-            console.log("added child!");
-            
-            console.log(`parent.id: ${parent.id}`);
 
-            console.log(`parent.childElementCount: ${parent.childElementCount}`);
 
-            setTimeout(() => {
-                setChildPopupDivInnerText(parent, "hello!")
-            }, 1000);
+            setChildPopupDivInnerText(parent, "hello!")
+        });
+        
+        setTimeout(() => {
+            const testPopupParent = Array.from(document.getElementsByTagName("popup-parent"))[0];
+            setChildPopupDivInnerText(testPopupParent, "excellent!")
+        }, 1000);
 
-            // newChild.innerText = "Surprise!";
-        });        
     }, 1000);
+
+
+
 
 }

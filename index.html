@@ -12,17 +12,21 @@
     <main>
         <section>
             <label for="input-number">Positive or Negative</label>
-            <input type="number" placeholder="Enter a number." id="input-number" onblur="isPosOrNeg(event)">    
+            <popup-parent id="group-number">
+                <input type="number" placeholder="Enter a number." id="input-number" onblur="isPosOrNeg(event)">    
+            </popup-parent>
         </section>
 
         <section>
             <label for="input-age">Retirement Calculator</label>
-            <input type="number" min="0" placeholder="Enter your age." id="input-age" onblur="calculateYearsUntilRetirement(event)">
+            <popup-parent id="group-age">
+                <input type="number" min="0" placeholder="Enter your age." id="input-age" onblur="calculateYearsUntilRetirement(event)">
+            </popup-parent>
         </section>
 
         <section>
             <label for="input-day">Select a day</label>
-            <div id="day-group" class="popup-parent">
+            <popup-parent id="group-day">
                 <select name="select-day" id="select-day" onchange="calculateDaysUntilWeekend(event)" required>
                     <option disabled selected value class="option-invalid"> --- </option>
                     <option value="Monday">Monday</option>
@@ -33,9 +37,7 @@
                     <option value="Saturday">Saturday</option>
                     <option value="Sunday">Sunday</option>
                 </select>
-
-                <div id="weekend-distance-displayer"></div>
-            </div>
+            </popup-parent>
         </section>
 
         <section>
@@ -55,7 +57,7 @@
 
         <section>
             <label for="select-vegetable">Select a vegetable to see the price</label>
-            <div id="vegetable-group" class="popup-parent">
+            <div id="group-vegetable" class="popup-parent">
                 <select name="select-vegetable" id="select-vegetable" onchange="handleSelectVegetable(event)" required>
                     <option disabled selected value class="option-invalid"> --- </option>
                     <option value="potatoes">Potatoes</option>
@@ -64,8 +66,6 @@
                     <option value="cabbage">Cabbage</option>
                     <option value="asparagus">Asparagus</option>
                 </select>
-                
-                <div id="vegetable-price-displayer">
             </div>
                 
         </section>

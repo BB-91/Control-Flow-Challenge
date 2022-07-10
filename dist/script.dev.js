@@ -8,6 +8,8 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function match(key, obj, default_val) {
   var value = obj[key];
   return obj.hasOwnProperty(key) ? value : default_val;
@@ -33,15 +35,28 @@ function getLargestNumber(num1, num2, num3) {
   return Math.max(num1, num2, num3);
 }
 
-function allNumbersPositive(numbers) {
-  for (var i = 0; i < numbers.length; i++) {
-    if (numbers[i] < 0) {
-      // counting 0 as positive
+function isTypedArray(array, type) {
+  if (typeof type != "string") {
+    throw new Error("Second arg 'type' is not a string");
+  }
+
+  for (var i = 0; i < array.length; i++) {
+    var element = array[i];
+
+    if (_typeof(element) != type) {
       return false;
     }
   }
 
   return true;
+}
+
+function allNumbersPositive(numbers) {
+  if (!isTypedArray(numbers, "number")) {
+    throw new Error("Not a number array");
+  }
+
+  return Math.min.apply(Math, _toConsumableArray(numbers)) >= 0; // counting 0 as positive 
 }
 
 function back(array) {
@@ -237,11 +252,13 @@ function calculateLargestNumber(event) {
     return;
   }
 
-  var sortedNumbers = dataArray[0];
+  var sortedNumbers = dataArray[0].map(function (element) {
+    return Number(element);
+  });
   var numbersStr = dataArray[1];
 
   if (numbersStr) {
-    alert("Sorted: ".concat(numbersStr, "\nLargest: ").concat(getLargestNumber.apply(void 0, _toConsumableArray(sortedNumbers))));
+    alert("Sorted: ".concat(numbersStr, "\n") + "Largest: ".concat(getLargestNumber.apply(void 0, _toConsumableArray(sortedNumbers)), "\n") + "All numbers positive: ".concat(allNumbersPositive(sortedNumbers)));
     event.target.value = numbersStr;
   }
 }

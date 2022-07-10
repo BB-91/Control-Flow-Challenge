@@ -25,13 +25,24 @@ function getLargestNumber(num1, num2, num3) {
     return Math.max(num1, num2, num3);
 }
 
-function allNumbersPositive(numbers) {
-    for (let i = 0; i < numbers.length; i++) {
-        if (numbers[i] < 0) { // counting 0 as positive
+function isTypedArray(array, type) {
+    if (typeof type != "string") {
+        throw new Error(`Second arg 'type' is not a string`)
+    }
+    for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        if (typeof element != type) {
             return false;
         }
     }
     return true;
+}
+
+function allNumbersPositive(numbers) {
+    if (!isTypedArray(numbers, "number")) {
+        throw new Error(`Not a number array`)
+    }
+    return Math.min(...numbers) >= 0; // counting 0 as positive 
 }
 
 function back(array) {
@@ -227,11 +238,14 @@ function calculateLargestNumber(event) {
         return;
     }
 
-    const sortedNumbers = dataArray[0];
+    const sortedNumbers = dataArray[0].map(element => Number(element));
     const numbersStr = dataArray[1];
 
     if (numbersStr) {
-        alert(`Sorted: ${numbersStr}\nLargest: ${getLargestNumber(...sortedNumbers)}`);
+        alert(`Sorted: ${numbersStr}\n`
+                + `Largest: ${getLargestNumber(...sortedNumbers)}\n`
+                + `All numbers positive: ${allNumbersPositive(sortedNumbers)}`
+                );
         event.target.value = numbersStr;
     }
 }

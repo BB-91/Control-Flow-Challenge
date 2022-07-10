@@ -184,8 +184,9 @@ function calculateYearsUntilRetirement(event) {
     alert(msg)
 }
 
-function calculateLargestNumber(event) {
-    let str = event.target.value;
+function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3) {
+    let dataArray = [];
+    const requiredCommaCount = requiredElementCount - 1
     let fStr = str.trim();
 
     if (str === "") {
@@ -196,26 +197,58 @@ function calculateLargestNumber(event) {
         fStr = fStr.slice(0, fStr.length - 1);
     }
 
-
     let commaCount = strCount(fStr, ",");
-    if (commaCount != 2) {
-        alert(`Expected 2 commas, got ${commaCount}`);
+    if (commaCount != requiredCommaCount) {
+        alert(`Expected ${requiredCommaCount} commas, got ${commaCount}`);
         return;
     }
 
     fStr = fStr.replaceAll(" ", "");
-    event.target.value = fStr;
     let subStrings = fStr.split(",");
 
     if (subStrings.length != 3) {
-        alert("Please enter exactly 3 numbers, separated by commas.")
+        alert("Please enter exactly 3 values, separated by commas.")
     } else {
-        let numArray = subStrings.map(n => Number(n));
-        numArray.sort();
-        let numArrayStr = String(numArray).replaceAll(",", ", ");
-        let msg = `Sorted: ${numArrayStr}\nLargest: ${getLargestNumber(...numArray)}`;
-        alert(msg);
-        event.target.value = numArrayStr;
+        if (shouldSort) {
+            subStrings.sort();
+        }
+        let arrayStr = String(subStrings).replaceAll(",", ", ");
+        dataArray.push(subStrings);
+        dataArray.push(arrayStr);
+    }
+
+    return dataArray;
+}
+
+function calculateLargestNumber(event) {
+    let str = event.target.value;
+    const dataArray = getCommaSeparatedArrayAndStr(str, true);
+    if (dataArray.length != 2) {
+        return;
+    }
+
+    const sortedNumbers = dataArray[0];
+    const numbersStr = dataArray[1];
+
+    if (numbersStr) {
+        alert(`Sorted: ${numbersStr}\nLargest: ${getLargestNumber(...sortedNumbers)}`);
+        event.target.value = numbersStr;
+    }
+}
+
+function showLastName(event) {
+    let str = event.target.value;
+    const dataArray = getCommaSeparatedArrayAndStr(str, false);
+    if (dataArray.length != 2) {
+        return;
+    }
+
+    const unsortedNames = dataArray[0].map(name => titleCase(name));
+    const namesStr = String(unsortedNames).replaceAll(",", ", ");
+
+    if (namesStr) {
+        alert(`Last name entered: ${back(unsortedNames)}`);
+        event.target.value = namesStr;
     }
 }
 

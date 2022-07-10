@@ -36,6 +36,11 @@
         </section>
 
         <section>
+            <label for="input-3-names">Enter 3 names, separated by commas</label>
+            <input type="text" placeholder="Enter 3 names" id="input-3-names" onblur="showLastName(event)">
+        </section>
+
+        <section>
             <label for="select-vegetable">Select a vegetable to see the price</label>
             <div id="vegetable-group">
                 <select name="select-vegetable" id="select-vegetable" onchange="handleSelectVegetable(event)" required>

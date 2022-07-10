@@ -6,7 +6,12 @@ class PopupParent extends HTMLElement {
     }
 }
 
-customElements.define('popup-parent', PopupParent);
+const TAG = {
+    POPUP_DIV: "popup-div",
+    POPUP_PARENT: "popup-parent",
+}
+
+customElements.define(TAG.POPUP_PARENT, PopupParent);
 
 function getElem(elementID_OR_element) {
     let element = null;
@@ -32,23 +37,24 @@ function setElemInnerText(elementID_OR_element, newInnerText){
 
 function getChildPopupDiv(parentElement_OR_parentElementID){
     const parent = getElem(parentElement_OR_parentElementID);
-    if (parent.tagName !== "POPUP-PARENT") { // tagName returns upper-case
-        throw new Error(`Element tagName: '${parent.tagName}', expected: 'POPUP-PARENT'`);
+    const upperTag = TAG.POPUP_PARENT.toUpperCase()
+    if (parent.tagName !== upperTag) { // tagName returns upper-case
+        throw new Error(`Element tagName: '${parent.tagName}', expected: '${upperTag}'`);
     }
     let childPopupDiv = null;
     
     const children = Array.from(parent.children);
     children.forEach(child => {
-        if (child.classList.contains("popup-div")) {
+        if (child.classList.contains(TAG.POPUP_DIV)) {
             if (childPopupDiv) {
-                throw new Error(`More than one child with class popup-div found under parent\n:${parent}`)
+                throw new Error(`More than one child with class '${TAG.POPUP_DIV}' found under parent\n:${parent}`)
             }
             childPopupDiv = child;
         }
     });
 
     if (!childPopupDiv) {
-        throw new Error(`Can't find child with class 'popup-div' under parent with id: '${parent.id}'\n${parent}`)
+        throw new Error(`Can't find child with class '${TAG.POPUP_DIV}' under parent with id: '${parent.id}'\n${parent}`)
     }
     return childPopupDiv;
 }
@@ -101,6 +107,28 @@ function isTypedArray(array, type) {
     return true;
 }
 
+function isNumStrArray(array) {
+    if (!isTypedArray(array, "string")) {
+        return false;
+    } else {
+        array.forEach(str => {
+            if (isNaN(str)) {
+                return false;
+            }
+        });
+    }
+    return true;
+}
+
+function numStrArrayToNumArray(array) {
+    if (!isNumStrArray) {
+        throw new Error(`Not a number string array`);
+    } else {
+        return array.map(numStr => Number(numStr));
+    }
+}
+
+
 function allNumbersPositive(numbers) {
     if (!isTypedArray(numbers, "number")) {
         throw new Error(`Not a number array`)
@@ -142,15 +170,15 @@ function isPosOrNeg(event) {
     }
 
     if (isNaN(value)) {
-        alert(`'${value}' is not a number.`);
+        setSiblingPopupDivInnerText(event.target, `'${value}' is not a number.`);
     } else if (isNumberPositive(value)) {
         if (value == 0) {
             value = Math.abs(0);
             event.target.value = value;
         }
-        alert(`${value} is a positive number.`);
+        setSiblingPopupDivInnerText(event.target, `${value} is a positive number.`);
     } else {
-        alert(`${value} is a negative number.`);
+        setSiblingPopupDivInnerText(event.target, `${value} is a negative number.`);
     }
 }
 
@@ -236,7 +264,7 @@ function calculateNumberOfYears(event) {
         msg += " (truncated)"
     }
 
-    alert(msg);
+    setSiblingPopupDivInnerText(event.target, msg);
 }
 
 function calculateYearsUntilRetirement(event) {
@@ -260,9 +288,9 @@ function calculateYearsUntilRetirement(event) {
     } else if (yearsUntilRetirment == 0) {
         msg += `you can retire now!`
     } else {
-        msg += `you should have retired ${Math.abs(yearsUntilRetirment)} ${yearStr} ago!`
+        msg += `you should've retired ${Math.abs(yearsUntilRetirment)} ${yearStr} ago!`;
     }
-    alert(msg)
+    setSiblingPopupDivInnerText(event.target, msg);
 }
 
 function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3) {
@@ -291,8 +319,19 @@ function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3)
         alert("Please enter exactly 3 values, separated by commas.")
     } else {
         if (shouldSort) {
-            subStrings.sort();
+            if (isNumStrArray(subStrings)) {
+                let numArray = numStrArrayToNumArray(subStrings);
+                numArray.sort((a, b) => a - b);
+                console.log(`numArray: ${numArray}`);
+                console.log(typeof numArray[0]);
+                subStrings = numArray.map(num => String(num));
+                console.log("WOWOWOW!!!");
+            } else {
+                subStrings.sort();
+            }
+
         }
+
         let arrayStr = String(subStrings).replaceAll(",", ", ");
         dataArray.push(subStrings);
         dataArray.push(arrayStr);
@@ -312,10 +351,12 @@ function calculateLargestNumber(event) {
     const numbersStr = dataArray[1];
 
     if (numbersStr) {
-        alert(`Sorted: ${numbersStr}\n`
-                + `Largest: ${getLargestNumber(...sortedNumbers)}\n`
-                + `All numbers positive: ${allNumbersPositive(sortedNumbers)}`
-                );
+        setSiblingPopupDivInnerText(event.target,
+            `Sorted: ${numbersStr}\n`
+            + `Largest: ${getLargestNumber(...sortedNumbers)}\n`
+            + `All numbers positive: ${allNumbersPositive(sortedNumbers)}`
+        )
+
         event.target.value = numbersStr;
     }
 }
@@ -331,7 +372,6 @@ function showLastName(event) {
     const namesStr = String(unsortedNames).replaceAll(",", ", ");
 
     if (namesStr) {
-        // alert(`Last name entered: ${back(unsortedNames)}`);
         setSiblingPopupDivInnerText(event.target, `Last name entered: ${back(unsortedNames)}`)
         event.target.value = namesStr;
     }
@@ -358,25 +398,11 @@ function handleSelectVegetable(event) {
 
 
 window.onload = (event) =>  {
+    const popupParents = Array.from(document.getElementsByTagName(TAG.POPUP_PARENT));
 
-    setTimeout(() => {
-        const popupParents = Array.from(document.getElementsByTagName("popup-parent"));
-
-        popupParents.forEach(parent => {
-            const newChild = document.createElement("div");
-            newChild.classList.add("popup-div")
-            newChild.style.color = "red";
-            parent.appendChild(newChild);
-
-
-            setChildPopupDivInnerText(parent, "hello!")
-        });
-        
-        setTimeout(() => {
-            const testPopupParent = Array.from(document.getElementsByTagName("popup-parent"))[0];
-            setChildPopupDivInnerText(testPopupParent, "excellent!")
-        }, 1000);
-
-    }, 1000);
-
+    popupParents.forEach(parent => {
+        const newChild = document.createElement(TAG.POPUP_DIV);
+        newChild.classList.add(TAG.POPUP_DIV)
+        parent.appendChild(newChild);
+    });
 }

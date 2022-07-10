@@ -44,7 +44,11 @@ function (_HTMLElement) {
   return PopupParent;
 }(_wrapNativeSuper(HTMLElement));
 
-customElements.define('popup-parent', PopupParent);
+var TAG = {
+  POPUP_DIV: "popup-div",
+  POPUP_PARENT: "popup-parent"
+};
+customElements.define(TAG.POPUP_PARENT, PopupParent);
 
 function getElem(elementID_OR_element) {
   var element = null;
@@ -73,18 +77,19 @@ function setElemInnerText(elementID_OR_element, newInnerText) {
 
 function getChildPopupDiv(parentElement_OR_parentElementID) {
   var parent = getElem(parentElement_OR_parentElementID);
+  var upperTag = TAG.POPUP_PARENT.toUpperCase();
 
-  if (parent.tagName !== "POPUP-PARENT") {
+  if (parent.tagName !== upperTag) {
     // tagName returns upper-case
-    throw new Error("Element tagName: '".concat(parent.tagName, "', expected: 'POPUP-PARENT'"));
+    throw new Error("Element tagName: '".concat(parent.tagName, "', expected: '").concat(upperTag, "'"));
   }
 
   var childPopupDiv = null;
   var children = Array.from(parent.children);
   children.forEach(function (child) {
-    if (child.classList.contains("popup-div")) {
+    if (child.classList.contains(TAG.POPUP_DIV)) {
       if (childPopupDiv) {
-        throw new Error("More than one child with class popup-div found under parent\n:".concat(parent));
+        throw new Error("More than one child with class '".concat(TAG.POPUP_DIV, "' found under parent\n:").concat(parent));
       }
 
       childPopupDiv = child;
@@ -92,7 +97,7 @@ function getChildPopupDiv(parentElement_OR_parentElementID) {
   });
 
   if (!childPopupDiv) {
-    throw new Error("Can't find child with class 'popup-div' under parent with id: '".concat(parent.id, "'\n").concat(parent));
+    throw new Error("Can't find child with class '".concat(TAG.POPUP_DIV, "' under parent with id: '").concat(parent.id, "'\n").concat(parent));
   }
 
   return childPopupDiv;
@@ -148,6 +153,30 @@ function isTypedArray(array, type) {
   return true;
 }
 
+function isNumStrArray(array) {
+  if (!isTypedArray(array, "string")) {
+    return false;
+  } else {
+    array.forEach(function (str) {
+      if (isNaN(str)) {
+        return false;
+      }
+    });
+  }
+
+  return true;
+}
+
+function numStrArrayToNumArray(array) {
+  if (!isNumStrArray) {
+    throw new Error("Not a number string array");
+  } else {
+    return array.map(function (numStr) {
+      return Number(numStr);
+    });
+  }
+}
+
 function allNumbersPositive(numbers) {
   if (!isTypedArray(numbers, "number")) {
     throw new Error("Not a number array");
@@ -193,16 +222,16 @@ function isPosOrNeg(event) {
   }
 
   if (isNaN(value)) {
-    alert("'".concat(value, "' is not a number."));
+    setSiblingPopupDivInnerText(event.target, "'".concat(value, "' is not a number."));
   } else if (isNumberPositive(value)) {
     if (value == 0) {
       value = Math.abs(0);
       event.target.value = value;
     }
 
-    alert("".concat(value, " is a positive number."));
+    setSiblingPopupDivInnerText(event.target, "".concat(value, " is a positive number."));
   } else {
-    alert("".concat(value, " is a negative number."));
+    setSiblingPopupDivInnerText(event.target, "".concat(value, " is a negative number."));
   }
 }
 
@@ -280,7 +309,7 @@ function calculateNumberOfYears(event) {
     msg += " (truncated)";
   }
 
-  alert(msg);
+  setSiblingPopupDivInnerText(event.target, msg);
 }
 
 function calculateYearsUntilRetirement(event) {
@@ -304,10 +333,10 @@ function calculateYearsUntilRetirement(event) {
   } else if (yearsUntilRetirment == 0) {
     msg += "you can retire now!";
   } else {
-    msg += "you should have retired ".concat(Math.abs(yearsUntilRetirment), " ").concat(yearStr, " ago!");
+    msg += "you should've retired ".concat(Math.abs(yearsUntilRetirment), " ").concat(yearStr, " ago!");
   }
 
-  alert(msg);
+  setSiblingPopupDivInnerText(event.target, msg);
 }
 
 function getCommaSeparatedArrayAndStr(str, shouldSort) {
@@ -338,7 +367,20 @@ function getCommaSeparatedArrayAndStr(str, shouldSort) {
     alert("Please enter exactly 3 values, separated by commas.");
   } else {
     if (shouldSort) {
-      subStrings.sort();
+      if (isNumStrArray(subStrings)) {
+        var numArray = numStrArrayToNumArray(subStrings);
+        numArray.sort(function (a, b) {
+          return a - b;
+        });
+        console.log("numArray: ".concat(numArray));
+        console.log(_typeof(numArray[0]));
+        subStrings = numArray.map(function (num) {
+          return String(num);
+        });
+        console.log("WOWOWOW!!!");
+      } else {
+        subStrings.sort();
+      }
     }
 
     var arrayStr = String(subStrings).replaceAll(",", ", ");
@@ -363,7 +405,7 @@ function calculateLargestNumber(event) {
   var numbersStr = dataArray[1];
 
   if (numbersStr) {
-    alert("Sorted: ".concat(numbersStr, "\n") + "Largest: ".concat(getLargestNumber.apply(void 0, _toConsumableArray(sortedNumbers)), "\n") + "All numbers positive: ".concat(allNumbersPositive(sortedNumbers)));
+    setSiblingPopupDivInnerText(event.target, "Sorted: ".concat(numbersStr, "\n") + "Largest: ".concat(getLargestNumber.apply(void 0, _toConsumableArray(sortedNumbers)), "\n") + "All numbers positive: ".concat(allNumbersPositive(sortedNumbers)));
     event.target.value = numbersStr;
   }
 }
@@ -382,7 +424,6 @@ function showLastName(event) {
   var namesStr = String(unsortedNames).replaceAll(",", ", ");
 
   if (namesStr) {
-    // alert(`Last name entered: ${back(unsortedNames)}`);
     setSiblingPopupDivInnerText(event.target, "Last name entered: ".concat(back(unsortedNames)));
     event.target.value = namesStr;
   }
@@ -405,18 +446,10 @@ function handleSelectVegetable(event) {
 }
 
 window.onload = function (event) {
-  setTimeout(function () {
-    var popupParents = Array.from(document.getElementsByTagName("popup-parent"));
-    popupParents.forEach(function (parent) {
-      var newChild = document.createElement("div");
-      newChild.classList.add("popup-div");
-      newChild.style.color = "red";
-      parent.appendChild(newChild);
-      setChildPopupDivInnerText(parent, "hello!");
-    });
-    setTimeout(function () {
-      var testPopupParent = Array.from(document.getElementsByTagName("popup-parent"))[0];
-      setChildPopupDivInnerText(testPopupParent, "excellent!");
-    }, 1000);
-  }, 1000);
+  var popupParents = Array.from(document.getElementsByTagName(TAG.POPUP_PARENT));
+  popupParents.forEach(function (parent) {
+    var newChild = document.createElement(TAG.POPUP_DIV);
+    newChild.classList.add(TAG.POPUP_DIV);
+    parent.appendChild(newChild);
+  });
 };

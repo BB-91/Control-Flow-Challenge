@@ -9,12 +9,39 @@ function titleCase(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
-function isPositive(num) {
+function isNumberPositive(num) {
   if (num == 0) {
     throw new Error("number is zero.");
   } else {
     return num > 0;
   }
+}
+
+function convertDaysToAge(days) {
+  return days / 365.0;
+}
+
+function getLargestNumber(num1, num2, num3) {
+  return Math.max(num1, num2, num3);
+}
+
+function allNumbersPositive(numbers) {
+  for (var i = 0; i < numbers.length; i++) {
+    if (numbers[i] < 0) {
+      // counting 0 as positive
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function back(array) {
+  return array[array.length - 1];
+}
+
+function getLastName(names) {
+  return back(names);
 }
 
 function strCount(str, subStr) {
@@ -49,7 +76,7 @@ function isPosNegZeroNaN(event) {
     alert("'".concat(value, "' is not a number."));
   } else if (value == 0) {
     alert("value is zero.");
-  } else if (isPositive(value)) {
+  } else if (isNumberPositive(value)) {
     alert("".concat(value, " is a positive number."));
   } else {
     alert("".concat(value, " is a negative number."));

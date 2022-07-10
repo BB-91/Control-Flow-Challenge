@@ -103,22 +103,7 @@ function isPosOrNeg(event) {
   } else {
     alert("".concat(value, " is a negative number."));
   }
-} // function isPosOrNeg(event) {
-//     let value = event.target.value
-//     if (value === "") {
-//         return;
-//     }
-//     if (isNaN(value)) {
-//         alert(`'${value}' is not a number.`);
-//     } else if (value == 0) {
-//         alert("value is zero.");
-//     } else if (isNumberPositive(value)) {
-//         alert(`${value} is a positive number.`);
-//     } else {
-//         alert(`${value} is a negative number.`);
-//     }
-// }
-
+}
 
 function calculateDaysUntilWeekend(event) {
   var day = event.target.value;

@@ -54,3 +54,10 @@ popup-parent {
   align-items: center;
   width: 900px;
 }
+
+popup-div {
+  color: black;
+}
+popup-div.error-msg {
+  color: red;
+}

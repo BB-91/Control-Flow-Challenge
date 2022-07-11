@@ -48,6 +48,9 @@ var TAG = {
   POPUP_DIV: "popup-div",
   POPUP_PARENT: "popup-parent"
 };
+var CLASS = {
+  ERROR_MSG: "error-msg"
+};
 customElements.define(TAG.POPUP_PARENT, PopupParent);
 
 function getElem(elementID_OR_element) {
@@ -122,7 +125,17 @@ function match(key, obj, default_val) {
 }
 
 function titleCase(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  return str.charAt(0).toUpperCase() + str.slice(1); // non-first uppercase letters may be desired for abbreviations, etc.
+}
+
+function titleCaseArray(array) {
+  return array.map(function (str) {
+    return titleCase(str);
+  });
+}
+
+function titleCaseArrayStr(array) {
+  return String(titleCaseArray(array)).replaceAll(",", ", ");
 }
 
 function isNumberPositive(num) {
@@ -255,13 +268,13 @@ function calculateDaysUntilWeekend(event) {
   }, "'".concat(fDay, "' is not a valid day. (e.g. Monday, Tuesday, Wednesday, etc.)"));
 
   if (isNaN(result)) {
-    alert(result);
+    setSiblingPopupDivInnerText(event.target, result);
   } else {
     var msg = match(result, {
       0: "".concat(fDay, " is a weekend. Nice!"),
       1: "There is 1 day between ".concat(fDay, " and Saturday.")
     }, "There are ".concat(result, " days between ").concat(fDay, " and Saturday."));
-    setChildPopupDivInnerText("group-day", msg);
+    setSiblingPopupDivInnerText(event.target, msg);
   }
 }
 
@@ -349,22 +362,41 @@ function getCommaSeparatedArrayAndStr(str, shouldSort) {
     return dataArray;
   }
 
+  fStr = fStr.replaceAll(" ", ",");
+  fStr = fStr.replaceAll("\t", ",");
+
+  while (strCount(fStr, ",,") > 0) {
+    fStr = fStr.replaceAll(",,", ",");
+  }
+
   while (fStr.endsWith(",")) {
     fStr = fStr.slice(0, fStr.length - 1);
   }
 
+  while (fStr.startsWith(",")) {
+    fStr = fStr.slice(1);
+  }
+
+  fStr = fStr.replaceAll(",", ", ");
+  var subStrings = fStr.split(", ");
   var commaCount = strCount(fStr, ",");
 
   if (commaCount != requiredCommaCount) {
-    alert("Expected ".concat(requiredCommaCount, " commas, got ").concat(commaCount));
-    return dataArray;
+    throw {
+      name: "InvalidCommaCount",
+      message: "Expected ".concat(requiredCommaCount, " commas, got ").concat(commaCount),
+      fStr: fStr,
+      subStrings: subStrings
+    };
   }
 
-  fStr = fStr.replaceAll(" ", "");
-  var subStrings = fStr.split(",");
-
   if (subStrings.length != 3) {
-    alert("Please enter exactly 3 values, separated by commas.");
+    throw {
+      name: "InvalidElementCount",
+      message: "Please enter exactly ".concat(requiredElementCount, " values, separated by commas."),
+      fStr: fStr,
+      subStrings: subStrings
+    };
   } else {
     if (shouldSort) {
       if (isNumStrArray(subStrings)) {
@@ -372,12 +404,9 @@ function getCommaSeparatedArrayAndStr(str, shouldSort) {
         numArray.sort(function (a, b) {
           return a - b;
         });
-        console.log("numArray: ".concat(numArray));
-        console.log(_typeof(numArray[0]));
         subStrings = numArray.map(function (num) {
           return String(num);
         });
-        console.log("WOWOWOW!!!");
       } else {
         subStrings.sort();
       }
@@ -392,41 +421,62 @@ function getCommaSeparatedArrayAndStr(str, shouldSort) {
 }
 
 function calculateLargestNumber(event) {
-  var str = event.target.value;
-  var dataArray = getCommaSeparatedArrayAndStr(str, true);
+  var msg = "";
+  var popupDiv = getSiblingPopupDiv(event.target);
 
-  if (dataArray.length != 2) {
-    return;
+  try {
+    var str = event.target.value;
+    var dataArray = getCommaSeparatedArrayAndStr(str, true);
+
+    if (dataArray.length != 2) {
+      return;
+    }
+
+    var sortedNumbers = dataArray[0].map(function (element) {
+      return Number(element);
+    });
+    var numbersStr = dataArray[1];
+
+    if (numbersStr) {
+      event.target.value = numbersStr;
+      msg = "Sorted: ".concat(numbersStr, "\n") + "Largest: ".concat(getLargestNumber.apply(void 0, _toConsumableArray(sortedNumbers)), "\n") + "All numbers positive: ".concat(allNumbersPositive(sortedNumbers));
+      popupDiv.classList.remove(CLASS.ERROR_MSG);
+    }
+  } catch (error) {
+    msg = "".concat(error.name, ": ").concat(error.message);
+    popupDiv.classList.add(CLASS.ERROR_MSG);
+    event.target.value = error.fStr;
   }
 
-  var sortedNumbers = dataArray[0].map(function (element) {
-    return Number(element);
-  });
-  var numbersStr = dataArray[1];
-
-  if (numbersStr) {
-    setSiblingPopupDivInnerText(event.target, "Sorted: ".concat(numbersStr, "\n") + "Largest: ".concat(getLargestNumber.apply(void 0, _toConsumableArray(sortedNumbers)), "\n") + "All numbers positive: ".concat(allNumbersPositive(sortedNumbers)));
-    event.target.value = numbersStr;
-  }
+  setSiblingPopupDivInnerText(event.target, msg);
 }
 
 function showLastName(event) {
-  var str = event.target.value;
-  var dataArray = getCommaSeparatedArrayAndStr(str, false);
+  var msg = "";
+  var popupDiv = getSiblingPopupDiv(event.target);
 
-  if (dataArray.length != 2) {
-    return;
+  try {
+    var str = event.target.value;
+    var dataArray = getCommaSeparatedArrayAndStr(str, false);
+
+    if (dataArray.length != 2) {
+      return;
+    }
+
+    var namesStr = titleCaseArrayStr(dataArray[0]);
+
+    if (namesStr) {
+      msg = "Last name entered: ".concat(back(namesStr.split(", ")));
+      popupDiv.classList.remove(CLASS.ERROR_MSG);
+      event.target.value = namesStr;
+    }
+  } catch (error) {
+    msg = error.message;
+    popupDiv.classList.add(CLASS.ERROR_MSG);
+    event.target.value = titleCaseArrayStr(error.subStrings);
   }
 
-  var unsortedNames = dataArray[0].map(function (name) {
-    return titleCase(name);
-  });
-  var namesStr = String(unsortedNames).replaceAll(",", ", ");
-
-  if (namesStr) {
-    setSiblingPopupDivInnerText(event.target, "Last name entered: ".concat(back(unsortedNames)));
-    event.target.value = namesStr;
-  }
+  setSiblingPopupDivInnerText(event.target, msg);
 }
 
 function handleSelectVegetable(event) {

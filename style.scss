@@ -57,3 +57,11 @@ popup-parent {
     align-items: center;
     width: 900px;
 }
+
+popup-div {
+    color: black;
+
+    &.error-msg{
+        color: red;
+    }
+}

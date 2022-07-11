@@ -11,6 +11,10 @@ const TAG = {
     POPUP_PARENT: "popup-parent",
 }
 
+const CLASS = {
+    ERROR_MSG: "error-msg",
+}
+
 customElements.define(TAG.POPUP_PARENT, PopupParent);
 
 function getElem(elementID_OR_element) {
@@ -79,7 +83,15 @@ function match(key, obj, default_val) {
 }
 
 function titleCase(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    return str.charAt(0).toUpperCase() + str.slice(1); // non-first uppercase letters may be desired for abbreviations, etc.
+}
+
+function titleCaseArray(array) {
+    return array.map(str => titleCase(str));
+}
+
+function titleCaseArrayStr(array) {
+    return String(titleCaseArray(array)).replaceAll(",", ", ");
 }
 
 function isNumberPositive(num) {
@@ -182,7 +194,7 @@ function isPosOrNeg(event) {
     }
 }
 
-function calculateDaysUntilWeekend(event){
+function calculateDaysUntilWeekend(event) {
     const day = event.target.value
     if (day === "") {
         return;
@@ -206,7 +218,7 @@ function calculateDaysUntilWeekend(event){
         );
 
     if (isNaN(result)) {
-        alert(result);
+        setSiblingPopupDivInnerText(event.target, result)
     } else {
         const msg =
             match(result,
@@ -217,7 +229,7 @@ function calculateDaysUntilWeekend(event){
                 `There are ${result} days between ${fDay} and Saturday.`
             );
 
-        setChildPopupDivInnerText("group-day", msg);
+        setSiblingPopupDivInnerText(event.target, msg)
     }
 }
 
@@ -301,31 +313,48 @@ function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3)
     if (str === "") {
         return dataArray;
     }
+    
+    fStr = fStr.replaceAll(" ", ",")
+    fStr = fStr.replaceAll("\t", ",")
+
+    while (strCount(fStr, ",,") > 0) {
+        fStr = fStr.replaceAll(",,", ",");
+    }
 
     while (fStr.endsWith(",")) {
         fStr = fStr.slice(0, fStr.length - 1);
     }
 
-    let commaCount = strCount(fStr, ",");
-    if (commaCount != requiredCommaCount) {
-        alert(`Expected ${requiredCommaCount} commas, got ${commaCount}`);
-        return dataArray;
+    while (fStr.startsWith(",")) {
+        fStr = fStr.slice(1);
     }
 
-    fStr = fStr.replaceAll(" ", "");
-    let subStrings = fStr.split(",");
+
+    fStr = fStr.replaceAll(",", ", ");
+    let subStrings = fStr.split(", ");
+    let commaCount = strCount(fStr, ",");
+
+    if (commaCount != requiredCommaCount) {
+        throw {name: "InvalidCommaCount",
+                message: `Expected ${requiredCommaCount} commas, got ${commaCount}`,
+                fStr: fStr,
+                subStrings: subStrings,
+        };
+    }
 
     if (subStrings.length != 3) {
-        alert("Please enter exactly 3 values, separated by commas.")
+        throw {name: "InvalidElementCount",
+                message: `Please enter exactly ${requiredElementCount} values, separated by commas.`,
+                fStr: fStr,
+                subStrings: subStrings,
+        };
     } else {
+
         if (shouldSort) {
             if (isNumStrArray(subStrings)) {
                 let numArray = numStrArrayToNumArray(subStrings);
                 numArray.sort((a, b) => a - b);
-                console.log(`numArray: ${numArray}`);
-                console.log(typeof numArray[0]);
                 subStrings = numArray.map(num => String(num));
-                console.log("WOWOWOW!!!");
             } else {
                 subStrings.sort();
             }
@@ -341,40 +370,60 @@ function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3)
 }
 
 function calculateLargestNumber(event) {
-    let str = event.target.value;
-    const dataArray = getCommaSeparatedArrayAndStr(str, true);
-    if (dataArray.length != 2) {
-        return;
+    let msg = "";
+    let popupDiv = getSiblingPopupDiv(event.target);
+
+    try {
+        let str = event.target.value;
+        const dataArray = getCommaSeparatedArrayAndStr(str, true);
+        if (dataArray.length != 2) {
+            return;
+        }
+    
+        const sortedNumbers = dataArray[0].map(element => Number(element));
+        const numbersStr = dataArray[1];
+    
+        if (numbersStr) {
+            event.target.value = numbersStr;
+
+            msg = `Sorted: ${numbersStr}\n`
+                + `Largest: ${getLargestNumber(...sortedNumbers)}\n`
+                + `All numbers positive: ${allNumbersPositive(sortedNumbers)}`
+
+            popupDiv.classList.remove(CLASS.ERROR_MSG);
+        }
+    } catch (error) {
+        msg = `${error.name}: ${error.message}`
+        popupDiv.classList.add(CLASS.ERROR_MSG);
+        event.target.value = error.fStr;
     }
-
-    const sortedNumbers = dataArray[0].map(element => Number(element));
-    const numbersStr = dataArray[1];
-
-    if (numbersStr) {
-        setSiblingPopupDivInnerText(event.target,
-            `Sorted: ${numbersStr}\n`
-            + `Largest: ${getLargestNumber(...sortedNumbers)}\n`
-            + `All numbers positive: ${allNumbersPositive(sortedNumbers)}`
-        )
-
-        event.target.value = numbersStr;
-    }
+    setSiblingPopupDivInnerText(event.target, msg);
 }
 
 function showLastName(event) {
-    let str = event.target.value;
-    const dataArray = getCommaSeparatedArrayAndStr(str, false);
-    if (dataArray.length != 2) {
-        return;
-    }
+    let msg = "";
+    let popupDiv = getSiblingPopupDiv(event.target);
 
-    const unsortedNames = dataArray[0].map(name => titleCase(name));
-    const namesStr = String(unsortedNames).replaceAll(",", ", ");
+    try {
+        let str = event.target.value;
+        const dataArray = getCommaSeparatedArrayAndStr(str, false);
+        if (dataArray.length != 2) {
+            return;
+        }
 
-    if (namesStr) {
-        setSiblingPopupDivInnerText(event.target, `Last name entered: ${back(unsortedNames)}`)
-        event.target.value = namesStr;
+        const namesStr = titleCaseArrayStr(dataArray[0]);
+    
+        if (namesStr) {
+            msg = `Last name entered: ${back(namesStr.split(", "))}`;
+            popupDiv.classList.remove(CLASS.ERROR_MSG);
+            event.target.value = namesStr;
+        }        
+    } catch (error) {
+        msg = error.message;
+        popupDiv.classList.add(CLASS.ERROR_MSG);
+        event.target.value = titleCaseArrayStr(error.subStrings);
     }
+    setSiblingPopupDivInnerText(event.target, msg)
 }
 
 function handleSelectVegetable(event) {
@@ -395,7 +444,6 @@ function handleSelectVegetable(event) {
     let formatter = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'});
     setChildPopupDivInnerText("group-vegetable", `${formatter.format(price)}/kg`);
 }
-
 
 window.onload = (event) =>  {
     const popupParents = Array.from(document.getElementsByTagName(TAG.POPUP_PARENT));

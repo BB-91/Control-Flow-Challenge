@@ -54,10 +54,10 @@ popup-parent {
   align-items: center;
   width: 900px;
 }
-
-popup-div {
-  color: black;
+popup-parent popup-div {
+  display: block;
+  padding-left: 20px;
 }
-popup-div.error-msg {
+popup-parent popup-div.error-msg {
   color: red;
 }

@@ -42,7 +42,6 @@ label {
     font-weight: bold;
 }
 
-
 #input-day,
 #input-number-of-days,
 #input-3-numbers,
@@ -56,12 +55,13 @@ popup-parent {
     flex-wrap: wrap;
     align-items: center;
     width: 900px;
-}
 
-popup-div {
-    color: black;
-
-    &.error-msg{
-        color: red;
+    popup-div{
+        display: block;
+        padding-left: 20px;
+        
+        &.error-msg{
+            color: red;
+        }
     }
 }

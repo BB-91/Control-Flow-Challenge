@@ -27,7 +27,6 @@ function strCount(str, subStr) {
 
 function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3) {
     let dataArray = [];
-    const requiredCommaCount = requiredElementCount - 1
     let fStr = str.trim();
 
     if (str === "") {
@@ -51,19 +50,10 @@ function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3)
 
     fStr = fStr.replaceAll(",", ", ");
     let subStrings = fStr.split(", ");
-    let commaCount = strCount(fStr, ",");
-
-    if (commaCount != requiredCommaCount) {
-        throw {name: "InvalidCommaCount",
-                message: `Expected ${requiredCommaCount} commas, got ${commaCount}`,
-                fStr: fStr,
-                subStrings: subStrings,
-        };
-    }
 
     if (subStrings.length != 3) {
         throw {name: "InvalidElementCount",
-                message: `Please enter exactly ${requiredElementCount} values, separated by commas.`,
+                message: `Please enter ${requiredElementCount} comma-separated values. (Got ${subStrings.length})`,
                 fStr: fStr,
                 subStrings: subStrings,
         };

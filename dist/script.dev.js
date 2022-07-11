@@ -142,7 +142,7 @@ function calculateLargestNumber(event) {
       popupDiv.classList.remove(CLASS.ERROR_MSG);
     }
   } catch (error) {
-    msg = "".concat(error.name, ": ").concat(error.message);
+    msg = "".concat(error.message);
     popupDiv.classList.add(CLASS.ERROR_MSG);
     event.target.value = error.fStr;
   }
@@ -200,5 +200,20 @@ window.onload = function (event) {
     var newChild = document.createElement(TAG.POPUP_DIV);
     newChild.classList.add(TAG.POPUP_DIV);
     parent.appendChild(newChild);
+  });
+  var eventHandler = {
+    "input-number": isPosOrNeg,
+    "input-age": calculateYearsUntilRetirement,
+    "input-number-of-days": calculateNumberOfYears,
+    "input-3-numbers": calculateLargestNumber,
+    "input-3-names": showLastName
+  };
+  Object.keys(eventHandler).forEach(function (elementID) {
+    var handler = eventHandler[elementID];
+    getElem(elementID).addEventListener("keypress", function (event) {
+      if (event.key == "Enter") {
+        handler(event);
+      }
+    });
   });
 };

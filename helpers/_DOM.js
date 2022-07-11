@@ -13,6 +13,10 @@ const CLASS = {
     ERROR_MSG: "error-msg",
 }
 
+const KEYCODE = {
+    ENTER: 13,
+}
+
 customElements.define(TAG.POPUP_PARENT, PopupParent);
 
 function getElem(elementID_OR_element) {

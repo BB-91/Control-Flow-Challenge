@@ -54,12 +54,12 @@ popup-parent {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    width: 900px;
+    width: 1100px;
 
     popup-div{
         display: block;
         padding-left: 20px;
-        
+
         &.error-msg{
             color: red;
         }

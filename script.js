@@ -141,7 +141,7 @@ function calculateLargestNumber(event) {
             popupDiv.classList.remove(CLASS.ERROR_MSG);
         }
     } catch (error) {
-        msg = `${error.name}: ${error.message}`
+        msg = `${error.message}`
         popupDiv.classList.add(CLASS.ERROR_MSG);
         event.target.value = error.fStr;
     }
@@ -200,5 +200,22 @@ window.onload = (event) =>  {
         const newChild = document.createElement(TAG.POPUP_DIV);
         newChild.classList.add(TAG.POPUP_DIV)
         parent.appendChild(newChild);
+    });
+
+    const eventHandler = {
+        "input-number": isPosOrNeg,
+        "input-age": calculateYearsUntilRetirement,
+        "input-number-of-days": calculateNumberOfYears,
+        "input-3-numbers": calculateLargestNumber,
+        "input-3-names": showLastName,
+    }
+
+    Object.keys(eventHandler).forEach(elementID => {
+        let handler = eventHandler[elementID];
+        getElem(elementID).addEventListener("keypress", event => {
+            if (event.key == "Enter") {
+                handler(event);
+            }
+        })
     });
 }

@@ -1,16 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+$font-primary: "Roboto";
 $color-disabled: rgba(1.0, 1.0, 1.0, 0.1);
+$font-size-h1: clamp(22px, 2.0vw, 28px);
+$font-size-h2: calc(#{$font-size-h1} - 2px);
+$font-size-h3: calc(#{$font-size-h2} - 2px);
+$font-size-h4: calc(#{$font-size-h3} - 2px);
 
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: $font-primary, sans-serif;
 }
 
 main {
     margin: 20px;
     display: grid;
-    row-gap: 40px;
+    row-gap: calc(#{$font-size-h1} * 2);
 }
 
 section {
@@ -26,28 +32,20 @@ select:invalid,
     color: #{$color-disabled};
 }
 
+
 input,
-select,
-#day-group,
-#vegetable-group {
-    width: 250px;
-    height: 60px;
-    font-size: 24px;
+select {
+    width: 45vw;
+    font-size: $font-size-h4;
+    padding: calc(#{$font-size-h4} / 2.5);
 }
+
 
 label {
-    width: 600px;
-    font-size: 24px;
+    width: 45vw;
+    font-size: $font-size-h1;
     padding-bottom: 4px;
     font-weight: bold;
-}
-
-#input-day,
-#input-number-of-days,
-#input-3-numbers,
-#input-3-names,
-#input-count-substrings{
-    width: 500px;
 }
 
 popup-parent {

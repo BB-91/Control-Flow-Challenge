@@ -25,6 +25,10 @@ function strCount(str, subStr) {
     return count;
 }
 
+function hasSubStr(str, subStr) {
+    return strCount(str, subStr) > 0;
+}
+
 function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3) {
     let dataArray = [];
     let fStr = str.trim();
@@ -76,4 +80,56 @@ function getCommaSeparatedArrayAndStr(str, shouldSort, requiredElementCount = 3)
     }
 
     return dataArray;
+}
+
+function toFilteredStr(str, validChars) {
+    str = String(str)
+    let numberStr = "";
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charAt(i);
+        if (hasSubStr(validChars, char)) {
+            numberStr += char;
+        }
+    }
+    return numberStr;
+}
+
+function toNumberStr(str) {
+    return toFilteredStr(str, "-0123456789")
+}
+
+function toCSNumberStr(str) { // CS: comma-separated
+    return toFilteredStr(str, "-0123456789 ,")
+}
+
+function toNameStr(str) {
+    return toFilteredStr(str, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ,'");
+}
+
+function kebabCaseToCamelCase(str) {
+    let camelCase = "";
+    let lastWasDash = false;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charAt(i);
+
+        if (char != "-") {
+            if (lastWasDash && camelCase.length) {
+                camelCase += char.toUpperCase();
+            } else {
+                camelCase += char;
+            }
+        }
+
+        lastWasDash = (char == "-")
+    }
+    return camelCase;
+}
+
+function getHandlerNameFromElementID(elementID){
+    if (typeof elementID != "string") {
+        throw new Error(`Not a string: ${elementID}`)
+    }
+    let camelCase = kebabCaseToCamelCase(elementID);
+    let titleCase = camelCase.charAt(0).toUpperCase() + camelCase.slice(1); // calling titleCase() here gives access before initialization error
+    return `handle${titleCase}`
 }

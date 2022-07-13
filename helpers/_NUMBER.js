@@ -1,5 +1,5 @@
 function isNumberPositive(num) {
-    return num >= 0; // counting 0 as positive
+    return Number(num) >= 0; // counting 0 as positive
 }
 
 function getLargestNumber(num1, num2, num3) {

@@ -181,8 +181,7 @@ function handleInput3Numbers(event) {
         if (numbersStr) {
             event.target.value = numbersStr;
 
-            msg = `Sorted: ${numbersStr}\n`
-                + `Largest: ${getLargestNumber(...sortedNumbers)}\n`
+            msg = `Largest: ${getLargestNumber(...sortedNumbers)}\n`
                 + `All numbers positive: ${allNumbersPositive(sortedNumbers)}`
             
             popupDiv.classList.remove(CLASS.ERROR_MSG);
@@ -222,12 +221,15 @@ function handleInput3Names(event) {
 }
 
 function filterEventTargetValue(event, filterMethod) {
-    event.target.value = filterMethod(event.target.value);
+    let element = event.target
+    if (element.value == "" || getSiblingPopupDiv(element).innerText != "") {
+        setSiblingPopupDivInnerText(element, "");
+    } else {
+        element.value = filterMethod(element.value);
+    }
 }
 
 function handleEnterKeydown(event, handlerName) {
-    console.log(`event.type: ${event.type} -- handlerName: ${handlerName}`);
-
     if (typeof handlerName == "function") {
         // can use function.name to convert to string, but prefer string literal.
         throw new Error("Passed function instead of function name. (Use quotes)")
@@ -245,9 +247,9 @@ window.onload = (event) =>  {
     const popupParents = Array.from(document.getElementsByTagName(TAG.POPUP_PARENT));
 
     popupParents.forEach(parent => {
-        const newChild = document.createElement(TAG.POPUP_DIV);
-        newChild.classList.add(TAG.POPUP_DIV)
-        parent.appendChild(newChild);
+        const popupDiv = document.createElement(TAG.POPUP_DIV);
+        popupDiv.classList.add(TAG.POPUP_DIV)
+        parent.appendChild(popupDiv);
     });
 
     const inputElements = Array.from(document.getElementsByTagName("input"));
@@ -276,7 +278,7 @@ window.onload = (event) =>  {
         element.setAttribute("oninput", `filterEventTargetValue(event, ${filterMethodName})`);
 
         let handlerName = getHandlerNameFromElementID(element.id);
-        getElem(element.id).setAttribute("onkeydown", `handleEnterKeydown(event, "${handlerName}")`);
+        element.setAttribute("onkeydown", `handleEnterKeydown(event, "${handlerName}")`);
     });
 
     console.log("window loaded.");

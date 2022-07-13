@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap');
 $font-primary: "Roboto";
 $color-disabled: rgba(1.0, 1.0, 1.0, 0.1);
-$font-size-h1: clamp(22px, 2.0vw, 28px);
+$font-size-h1: clamp(22px, 2.0vw, 45px);
 $font-size-h2: calc(#{$font-size-h1} - 2px);
 $font-size-h3: calc(#{$font-size-h2} - 2px);
 $font-size-h4: calc(#{$font-size-h3} - 2px);
@@ -11,16 +11,14 @@ $font-size-h4: calc(#{$font-size-h3} - 2px);
     margin: 0;
     box-sizing: border-box;
     font-family: $font-primary, sans-serif;
+    font-weight:400;
 }
 
 main {
-    margin: 20px;
+    margin: calc(#{$font-size-h4} * 0.35);
     display: grid;
-    row-gap: calc(#{$font-size-h1} * 2);
-}
-
-section {
-    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: calc(#{$font-size-h1} * 1.75);
 }
 
 option {
@@ -35,31 +33,54 @@ select:invalid,
 
 input,
 select {
-    width: 45vw;
+    padding-left: calc(#{$font-size-h4} * 0.25);
+    width: clamp(300px, 45vw, 90vw);
+    min-height: calc(#{$font-size-h4} * 2.25);
     font-size: $font-size-h4;
-    padding: calc(#{$font-size-h4} / 2.5);
+}
+
+input:focus::placeholder {
+    color: transparent;
 }
 
 
 label {
-    width: 45vw;
-    font-size: $font-size-h1;
-    padding-bottom: 4px;
+    text-align: center;
+    font-size: $font-size-h4;
     font-weight: bold;
 }
 
 popup-parent {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    width: 1100px;
+    margin-top: calc(#{$font-size-h4} * 0.3);
+    display: grid;
+    row-gap: 10px;
 
     popup-div{
+        font-size: calc(#{$font-size-h4} * 0.95);
         display: block;
-        padding-left: 20px;
-
+        font-style: italic;
+    
         &.error-msg{
             color: red;
+            font-weight: bold;
+
+            text-shadow: 
+                1px 1px 0.15em black,
+                -1px -1px 0.15em black,
+                1px -1px 0.15em black,
+                -1px 1px 0.15em black,
+
+                0px 1px 0.15em black,
+                0px -1px 0.15em black,
+                1px 0px 0.15em black,
+                -1px 0px 0.15em black,
+                ;
         }
+    }
+}
+
+@media screen and (max-width: 900px){
+    main {
+        grid-template-columns: 1fr;
     }
 }

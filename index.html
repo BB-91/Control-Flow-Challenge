@@ -18,21 +18,21 @@
 <body>
     <main>
         <section>
-            <label for="input-number">Positive or Negative</label>
+            <label for="input-number">Enter a Number (Positive or Negative)</label>
             <popup-parent id="group-number">
-                <input type="number" placeholder="Enter a number." id="input-number" onblur="handleInputNumber(event)">
+                <input type="number" placeholder="..." id="input-number" onblur="handleInputNumber(event)">
             </popup-parent>
         </section>
 
         <section>
-            <label for="input-age">Retirement Calculator</label>
+            <label for="input-age">Enter Age to See Time Until Retirement</label>
             <popup-parent id="group-age">
-                <input type="number" min="0" placeholder="Enter your age." id="input-age" onblur="handleInputAge(event)">
+                <input type="number" min="0" placeholder="..." id="input-age" onblur="handleInputAge(event)">
             </popup-parent>
         </section>
 
         <section>
-            <label for="input-day">Select a day</label>
+            <label for="input-day">Select a Day to See Distance from Weekend</label>
             <popup-parent id="group-day">
                 <select name="select-day" id="select-day" onchange="handleSelectDay(event)" required>
                     <option disabled selected value class="option-invalid"> --- </option>
@@ -47,22 +47,8 @@
             </popup-parent>
         </section>
 
-        <!-- <section>
-            <label for="select-vegetable">Select a vegetable to see the price</label>
-            <popup-parent id="group-vegetable">
-                <select name="select-vegetable" id="select-vegetable" onchange="handleSelectVegetable(event)" required>
-                    <option disabled selected value class="option-invalid"> --- </option>
-                    <option value="potatoes">Potatoes</option>
-                    <option value="carrots">Carrots</option>
-                    <option value="broccoli">Broccoli</option>
-                    <option value="cabbage">Cabbage</option>
-                    <option value="asparagus">Asparagus</option>
-                </select>
-            </popup-parent>
-        </section> -->
-
         <section>
-            <label for="select-vegetable">Select a vegetable to see the price</label>
+            <label for="select-vegetable">Select a Vegetable to See the Price</label>
             <popup-parent id="group-vegetable">
                 <select name="select-vegetable" id="select-vegetable" onchange="handleSelectVegetable(event)" required>
                     <option disabled selected value class="option-invalid"> --- </option>
@@ -75,30 +61,28 @@
             </popup-parent>
         </section>
 
-        <section>
-            <label for="input-number-of-days">Convert Days to Years</label>
-            <popup-parent>
-                <input type="number" min="0" placeholder="Enter a number of days" id="input-number-of-days" onblur="handleInputNumberOfDays(event)">
-            </popup-parent>
-        </section>
+
 
         <section>
-            <label for="input-3-numbers">Enter 3 numbers, separated by commas</label>
+            <label for="input-3-numbers">Enter 3 Numbers, Separated by Commas</label>
             <popup-parent>
-                <input type="text" csnumbers="true" placeholder="Enter 3 numbers" id="input-3-numbers" onblur="handleInput3Numbers(event)">
+                <input type="text" csnumbers="true" placeholder="..." id="input-3-numbers" onblur="handleInput3Numbers(event)">
             </popup-parent>
         </section>
 
         <section>
             <label for="input-3-names">Enter 3 names, separated by commas</label>
             <popup-parent>
-                <input type="text" csnames="true" placeholder="Enter 3 names" id="input-3-names" onblur="handleInput3Names(event)">
+                <input type="text" csnames="true" placeholder="..." id="input-3-names" onblur="handleInput3Names(event)">
             </popup-parent>
         </section>
 
-
-        <input type="number" placeholder="Enter a number." id="DEBUGGING">
-
+        <section>
+            <label for="input-number-of-days">Enter Number of Days to Convert to Years</label>
+            <popup-parent>
+                <input type="number" min="0" placeholder="..." id="input-number-of-days" onblur="handleInputNumberOfDays(event)">
+            </popup-parent>
+        </section>
     </main>
 </body>
 </html>

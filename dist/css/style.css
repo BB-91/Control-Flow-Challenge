@@ -1,17 +1,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap");
+:root {
+  --font-primary: "Roboto";
+  --color-disabled: rgba(1.0, 1.0, 1.0, 0.1);
+  --fs1: clamp(22px, 2.0vw, 45px);
+  --fs2: calc(var(--fs1) - 2px);
+  --fs3: calc(var(--fs2) - 2px);
+  --fs4: calc(var(--fs3) - 2px);
+}
+
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-primary), sans-serif;
   font-weight: 400;
 }
 
 main {
-  margin: calc(calc(calc(calc(clamp(22px, 2vw, 45px) - 2px) - 2px) - 2px) * 0.35);
+  margin: calc(var(--fs4) * 0.35);
   display: grid;
   grid-template-columns: 1fr 1fr;
-  row-gap: calc(clamp(22px, 2vw, 45px) * 1.75);
+  row-gap: calc(var(--fs1) * 1.75);
 }
 
 option {
@@ -20,15 +29,15 @@ option {
 
 select:invalid,
 .option-invalid {
-  color: rgba(1, 1, 1, 0.1);
+  color: var(--color-disabled);
 }
 
 input,
 select {
-  padding-left: calc(calc(calc(calc(clamp(22px, 2vw, 45px) - 2px) - 2px) - 2px) * 0.25);
+  padding-left: calc(var(--fs4) * 0.25);
   width: clamp(300px, 45vw, 90vw);
-  min-height: calc(calc(calc(calc(clamp(22px, 2vw, 45px) - 2px) - 2px) - 2px) * 2.25);
-  font-size: calc(calc(calc(clamp(22px, 2vw, 45px) - 2px) - 2px) - 2px);
+  min-height: calc(var(--fs4) * 2.25);
+  font-size: var(--fs4);
 }
 
 input:focus::placeholder {
@@ -37,17 +46,17 @@ input:focus::placeholder {
 
 label {
   text-align: center;
-  font-size: calc(calc(calc(clamp(22px, 2vw, 45px) - 2px) - 2px) - 2px);
+  font-size: var(--fs4);
   font-weight: bold;
 }
 
 popup-parent {
-  margin-top: calc(calc(calc(calc(clamp(22px, 2vw, 45px) - 2px) - 2px) - 2px) * 0.3);
+  margin-top: calc(var(--fs4) * 0.3);
   display: grid;
   row-gap: 10px;
 }
 popup-parent popup-div {
-  font-size: calc(calc(calc(calc(clamp(22px, 2vw, 45px) - 2px) - 2px) - 2px) * 0.95);
+  font-size: calc(var(--fs4) * 0.95);
   display: block;
   font-style: italic;
 }
